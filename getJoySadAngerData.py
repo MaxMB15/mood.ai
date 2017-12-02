@@ -1,8 +1,9 @@
 import sys
-
+import indicoio
 import praw
 
-#python subredditTitle pathOfCSV riskOfSuisideNumber
+#python subredditTitle pathOfCSV JOY SAD ANGER    -or-
+#python subredditTitle pathOfCSV [NOTE ]
 if (len(sys.argv) != 4):
 	raise "invalid number of arguments. There must be 3, there is %d" %(len(sys.argv)-1)
 print sys.argv[1]
@@ -14,12 +15,12 @@ reddit = praw.Reddit(user_agent='Comment Extraction (by /u/MaxMB15)',
 #append to the CSV file
 import csv
 
-for submission in reddit.subreddit(sys.argv[1]).hot(limit=1000):
-    print (submission.selftext.replace("\n","").replace("*",""))
+for submission in reddit.subreddit(sys.argv[1]).hot(limit=500):
+    print (submission.title)
 
 csvfile = open(sys.argv[2], 'ab')
 filewriter = csv.writer(csvfile, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
-for submission in reddit.subreddit(sys.argv[1]).hot(limit=1000):
-	if (submission.selftext.replace("\n","").replace("*","") != None) and (submission.title.encode('ascii', 'ignore') != "") and (submission.selftext.replace("\n","").replace("*","") != ""):
-    		filewriter.writerow([submission.selftext.replace("\n","").replace("*","").encode('ascii', 'ignore'), sys.argv[3]])
+for submission in reddit.subreddit(sys.argv[1]).hot(limit=500):
+	if submission.title.encode('ascii', 'ignore') != "":
+    		filewriter.writerow([submission.title.encode('ascii', 'ignore'), sys.argv[3]])
 csvfile.close()
