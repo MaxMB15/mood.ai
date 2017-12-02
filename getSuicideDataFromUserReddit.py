@@ -4,7 +4,8 @@ import praw
 
 #python subredditTitle pathOfCSV riskOfSuisideNumber
 if (len(sys.argv) != 4):
-	raise "invalid number of arguments. There must be 3, there is %d" %(len(sys.argv)-1)
+	print 'Invalid number of arguments. There must be 3, there is ', str(len(sys.argv)-1)
+	raise ()
 print sys.argv[1]
 
 reddit = praw.Reddit(user_agent='Comment Extraction (by /u/MaxMB15)',
