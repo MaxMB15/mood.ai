@@ -17,8 +17,17 @@ reddit = praw.Reddit(user_agent='Comment Extraction (by /u/MaxMB15)', client_id=
 #append to the CSV file
 import csv
 
-for submission in reddit.subreddit(sys.argv[1]).hot(limit=20):
-    print (submission.title)
+text_list = []
+
+for submission in reddit.subreddit(sys.argv[1]).hot(limit=1000):
+    text = submission.selftext.replace("\n","").replace("*","").encode('ascii', 'ignore')
+    if text != None and text != "":
+    	text_list.append(text)
+    	print text
+
+print len(text_list)
+
+v = indicoio.emotion(text_list)
 
 csvfile = open(sys.argv[2], 'ab')
 filewriter = csv.writer(csvfile, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
@@ -27,17 +36,13 @@ if len(sys.argv) == 6:
 	sad = sys.argv[4]
 	anger = sys.argv[5]
 
-for submission in reddit.subreddit(sys.argv[1]).hot(limit=20):
-	text = submission.selftext.replace("\n","").replace("*","")
-	
-	if (text != None) and (submission.title.encode('ascii', 'ignore') != "") and (text != ""):
-		if len(sys.argv) == 3:
-			print text
-			v = indicoio.emotion(text)
-			print v
-			joy = v['joy']
-			sad = v['sadness']
-			anger = v['anger']
-
-		filewriter.writerow([text.encode('ascii', 'ignore'), joy, sad, anger])
+for i in xrange(len(text_list)):
+	xtext = text_list[i]
+	if len(sys.argv) == 3:
+		xv = v[i]
+			
+		joy = xv['joy']
+		sad = xv['sadness']
+		anger = xv['anger']
+	filewriter.writerow([xtext, joy, sad, anger])
 csvfile.close()
