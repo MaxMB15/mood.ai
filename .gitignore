@@ -3,3 +3,5 @@ xh_login_info.py
 .ipynb_checkpoints/Extracting Reddit SuicideWatch Data using Praw-checkpoint.ipynb
 .ipynb_checkpoints/Testing Google NL API-checkpoint.ipynb
 *.pyc
+*.xml
+*.iml

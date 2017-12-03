@@ -10,14 +10,17 @@ import indicoio
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.externals import joblib
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.externals import joblib
-
 # Credentials
 from xh_login_info import *
+import json
+
+
+from flask import Flask
 
 
 # Instantiates a client
@@ -88,10 +91,25 @@ def text2data(text):
     return np.array(sentiment_text(text) + get_entity_sentiment(text) + get_emotions(text)).reshape(1, -1)
 
 
+def text2risk(text):
+    regr = joblib.load("regr.pkl")
+    return str(regr.predict(text2data(text))[0])
+
+
+app = Flask(__name__)
+
+@app.route('/<inputText>')
+def homepage(inputText):
+    return text2risk(inputText)
+
+
 if __name__ == "__main__":
     example_text = """
     I'm 25, college grad, engineer, fiancee, 50k savings.I hate it all. Our life is just a constant grind. Work your ass off in school so you can go to "good" college. Work your ass off in college so you can find "good" job. Find a job and grind your life away there (and half of my friends are unemployed and with technical degrees, so pointless effort). All this effort is supposed to make you happy. It didnt work out for me, I never considered graduating and having a "career" a success.I am amazed how most of people can enjoy simple things (video games, football) without feeling that this world is a downward spiral.Am I depressed? What do I do?
     """
+    text_data = text2data(example_text)
+    print(text_data)
 
-    regr = joblib.load("regr.pkl")
-    print(regr.predict(text2data(example_text)))
+    b_dtc = joblib.load("boosted_dtc.pkl")
+
+    print(b_dtc)
