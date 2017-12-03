@@ -2,13 +2,13 @@ import sys
 import indicoio
 import praw
 
-#python subredditTitle pathOfCSV JOY SAD ANGER    -or-
+#python subredditTitle pathOfCSV JOY SAD ANGER FEAR SUPRISE    -or-
 #python subredditTitle pathOfCSV [NOTE ]
 
 indicoio.config.api_key = '7b1250a3e26b0a9a5f8f5e424d60e7b4'
 
-if (len(sys.argv) != 6 and len(sys.argv) != 3):
-	print "invalid number of arguments. There must be 2 or 5, there is ", str(len(sys.argv)-1)
+if (len(sys.argv) != 8 and len(sys.argv) != 3):
+	print "invalid number of arguments. There must be 2 or 7, there is ", str(len(sys.argv)-1)
 	raise
 #print sys.argv[1]
 
@@ -31,10 +31,12 @@ v = indicoio.emotion(text_list)
 
 csvfile = open(sys.argv[2], 'ab')
 filewriter = csv.writer(csvfile, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
-if len(sys.argv) == 6:
+if len(sys.argv) == 8:
 	joy = sys.argv[3]
 	sad = sys.argv[4]
 	anger = sys.argv[5]
+	fear = sys.argv[6]
+	suprise = sys.argv[7]
 
 for i in xrange(len(text_list)):
 	xtext = text_list[i]
@@ -44,5 +46,8 @@ for i in xrange(len(text_list)):
 		joy = xv['joy']
 		sad = xv['sadness']
 		anger = xv['anger']
-	filewriter.writerow([xtext, joy, sad, anger])
+		fear = xv['fear']
+		suprise = xv['suprise']
+
+	filewriter.writerow([xtext, joy, sad, anger, fear, suprise])
 csvfile.close()
