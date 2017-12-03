@@ -19,6 +19,7 @@ from xh_login_info import *
 
 # Instantiates a client
 client = language.LanguageServiceClient()
+indicoio.config.api_key = max_indicoio_apikey
 
 
 # Function definition
@@ -76,14 +77,16 @@ def get_entity_sentiment(text):
 
 
 def get_emotions(text):
-    indicoio.config.api_key = '7b1250a3e26b0a9a5f8f5e424d60e7b4'
     v = indicoio.emotion(text)
     return [v['joy'], v['sadness'], v['anger'], v['fear'], v['surprise']]
 
 
-indicoio.config.api_key = max_indicoio_apikey
-
-# Joy, Sadness, Anger, Fear, Surprise
-
+def text2data(text):
+    return sentiment_text(text) + get_entity_sentiment(text) + get_emotions(text)
 
 
+if __name__ == "__main__":
+    example_text = """
+    I'm 25, college grad, engineer, fiancee, 50k savings.I hate it all. Our life is just a constant grind. Work your ass off in school so you can go to "good" college. Work your ass off in college so you can find "good" job. Find a job and grind your life away there (and half of my friends are unemployed and with technical degrees, so pointless effort). All this effort is supposed to make you happy. It didnt work out for me, I never considered graduating and having a "career" a success.I am amazed how most of people can enjoy simple things (video games, football) without feeling that this world is a downward spiral.Am I depressed? What do I do?
+    """
+    print(text2data(example_text))
